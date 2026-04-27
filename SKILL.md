@@ -26,9 +26,44 @@ description: |
   
   ## 📋 你要做什么（核心任务）
   
-  **第 1-4 章：准备**（文档解析 → 代码分析 → 模块识别 → 创建任务列表）
-  
-  **第 4 章：设计**（⚠️ 核心，对每个模块循环执行）
+**第 1-4 章：准备**（文档解析 → 代码分析 → 模块识别 → 创建任务列表）
+   
+   ---
+   
+   **⚠️ 强制分步骤输出规则**（最高优先级，避免响应超时）
+   
+   **执行方式**：
+   - 使用**Edit工具分批次追加**内容，禁止一次性Write完整文档
+   - 每个步骤单独调用Edit，**自动连续执行**（无需等待用户确认）
+   
+   **步骤顺序**（严格按序执行，不得跳过）：
+   - 步骤1：Edit追加 → 4.1 业务流程设计（流程图+状态机+字段流转表）
+   - 步骤2：Edit追加 → 4.2 核心逻辑设计（伪代码+业务规则+调用链路）
+   - 步骤3：Edit追加 → 4.3 接口设计前半部分（API-01到API-08）
+   - 步骤4：Edit追加 → 4.3 接口设计后半部分（API-09到API-XX）
+   - 步骤5：Edit追加 → 4.4 数据库设计（表结构+DDL+索引）
+   - 步骤6：Edit追加 → 4.5 三遍校验+Java代码示例
+   - 步骤7：Bash运行 → verify.sh验证脚本
+   
+   **进度提示格式**（每个步骤开始前输出）：
+   - `【执行步骤 X】正在生成：{内容描述}`
+   - 步骤完成后输出：`→ 自动继续执行步骤 X+1`
+   
+   **验证失败自动循环**：
+   - 分析验证报告中的问题
+   - 使用Edit修正设计文档
+   - 重新运行verify.sh验证
+   - 最多循环3次，仍失败则输出问题清单供用户决策
+   
+   **禁止行为**：
+   - ❌ 一次性Write完整文档（会导致响应超时）
+   - ❌ 等待用户输入"继续"或"下一步"
+   - ❌ 跳过验证脚本执行
+   - ❌ 省略任何章节（4.1-4.5都必须完整输出）
+   
+   ---
+   
+   **第 4 章：设计**（⚠️ 核心，对每个模块循环执行）
   
   对每个模块执行以下流程，**每一步都是必须的，绝对必须，不得跳过或省略**：
   
@@ -101,7 +136,7 @@ description: |
   
   6. **验证脚本执行**（强制执行，模块完成后）
      - 执行命令：`bash verify.sh <模块编号> <文档路径>`
-     - 脚本位置：`${PROJECT_DIR}/verify.sh` 或 `/Users/xx/Downloads/req-to-design_a/verify.sh`
+     - 脚本位置：`${PROJECT_DIR}/verify.sh` 或 `/Users/zhangwanyu/Downloads/req-to-design_a/verify.sh`
      - **验证通过标准**（严格要求）：
        - 质量评分 ≥ 95 分
        - 需求覆盖度 = 100%
@@ -128,7 +163,7 @@ description: |
   bash verify.sh <模块编号> <文档路径>
   
   # 示例
-  bash verify.sh M05 "/Users/xx/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
+  bash verify.sh M05 "/Users/zhangwanyu/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
   ```
   
   **验证结果处理**：
@@ -157,46 +192,6 @@ description: |
   **关键目录**：
   - `${OUTPUT_DIR}` - 设计文档输出
   - `${CONTEXT_DIR}` - 上下文文件
----
-name: req-to-design
-description: |
-  ## 🎯 技能核心（一句话记住）
-  
-  **将产品需求转化为可落地的详细设计**（业务流程 + 架构设计+接口 + 数据库）
-  
-  ---
-  
-  ## 👤 你是谁（角色定位）
-  
-  **资深架构师 + 技术专家 + 产品专家**
-  
-  - 对设计质量负责，不是对用户满意度负责
-  - 发现问题必须指出，不是盲目实现
-  - 专业判断优先于用户情绪
-  
-  ---
-  
-  ## 📋 你要做什么（核心任务）
-  
-  **第1-4章：准备**（文档解析 → 代码分析 → 模块识别 → 创建任务列表）
-  
-  **第5章：设计**（⚠️ 核心，对每个模块循环执行）
-  - 4.1 业务流程 → 4.2 模块架构 → 4.3 接口设计 → 4.4 数据库设计
-  
-  **第6-7章：收尾**（汇总生成 → 任务结束）
-  
-  
-  ---
-  
-  ## 🛠️ 工具与目录
-  
-  **工具**：Read, Write, Edit, Glob, Grep, Bash, Question, todowrite
-  
-  **关键目录**：
-  - `${OUTPUT_DIR}` - 设计文档输出
-  - `${CONTEXT_DIR}` - 上下文文件  
-
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Question, **todowrite**
 ---
 
 # 需求文档转详细设计文档
@@ -258,7 +253,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Question, **todowrite**
 
 **目录说明**：
 - 系统将在此目录下自动创建项目子目录（如：/Users/.../design-output/1）
-- 项目子目录包含：context（上下文文件）、output（设计文档）、feedback（反馈文件）
+- 项目子目录包含：context（上下文文件）、output（设计文档）     
 
 ```
 
@@ -379,7 +374,7 @@ PROJECT_ID = config["PROJECT_ID"]
 | 文档格式 | 处理方式 | 保存路径 |
 |---------|---------|---------|
 | **PDF** | 使用 pdfplumber 提取文本 | `${CONTEXT_DIR}/主文档.txt` |
-| **Markdown (.md)** | 直接复制文件内容 | `${CONTEXT_DIR}/主文档.txt` |
+| **Markdown (.md)** | 直接复制文件内容（保持原格式） | `${CONTEXT_DIR}/主文档.md` |
 | **文本 (.txt)** | 直接复制文件内容 | `${CONTEXT_DIR}/主文档.txt` |
 | **Word (.docx)** | 使用 python-docx 提取文本 | `${CONTEXT_DIR}/主文档.txt` |
 
@@ -465,8 +460,18 @@ CONTEXT_DIR = config["CONTEXT_DIR"]
 # 源文件路径（用户上传的文件）
 source_path = "用户上传的 MD/TXT 文件路径"  # ← AI 需替换为实际路径
 
-# 目标文件路径
-output_path = f"{CONTEXT_DIR}/主文档.txt"
+# 根据源文件扩展名决定目标扩展名（保持原格式）
+source_ext = os.path.splitext(source_path)[1].lower()
+if source_ext == '.md':
+    output_path = f"{CONTEXT_DIR}/主文档.md"
+    file_type = "Markdown"
+elif source_ext == '.txt':
+    output_path = f"{CONTEXT_DIR}/主文档.txt"
+    file_type = "文本"
+else:
+    # 默认使用 .txt
+    output_path = f"{CONTEXT_DIR}/主文档.txt"
+    file_type = "文本"
 
 # 复制文件内容
 with open(source_path, 'r', encoding='utf-8') as src:
@@ -475,8 +480,9 @@ with open(source_path, 'r', encoding='utf-8') as src:
 with open(output_path, 'w', encoding='utf-8') as dst:
     dst.write(content)
 
-print(f"✓ 文档复制完成，保存到：{output_path}")
+print(f"✓ {file_type}文档复制完成，保存到：{output_path}")
 print(f"  文本长度：{len(content)} 字符")
+print(f"  文件格式：{source_ext}")
 ```
 
 ---
@@ -519,7 +525,7 @@ print(f"  文本长度：{len(text)} 字符")
 #### 解析完成后的处理
 
 **解析完成后**：
-1. 确认 `${CONTEXT_DIR}/主文档.txt` 文件已创建
+1. 确认主文档文件已创建（`${CONTEXT_DIR}/主文档.md` 或 `${CONTEXT_DIR}/主文档.txt`）
 2. 检查文本长度（应 > 1000 字符，否则可能解析失败）
 3. 进入 1.2 节：AI 语义识别章节结构
 
@@ -532,7 +538,7 @@ print(f"  文本长度：{len(text)} 字符")
 
 ### 1.2 AI 语义识别章节结构与功能模块
 
-**输入文件**：`${CONTEXT_DIR}/主文档.txt`（1.1 节已生成）
+**输入文件**：`${CONTEXT_DIR}/主文档.md` 或 `${CONTEXT_DIR}/主文档.txt`（1.1 节已生成）
 
 **核心原则**：AI 用语义理解分析文档，**不是用脚本规则匹配**
 
@@ -552,11 +558,16 @@ with open(f"{PROJECT_DIR}/project-config.json", 'r', encoding='utf-8') as f:
 CONTEXT_DIR = config["CONTEXT_DIR"]
 OUTPUT_DIR = config["OUTPUT_DIR"]
 
-# 读取主文档内容
-with open(f"{CONTEXT_DIR}/主文档.txt", 'r', encoding='utf-8') as f:
+# 读取主文档内容（支持 .md 和 .txt 两种格式）
+main_doc_path = f"{CONTEXT_DIR}/主文档.md"
+if not os.path.exists(main_doc_path):
+    main_doc_path = f"{CONTEXT_DIR}/主文档.txt"
+
+with open(main_doc_path, 'r', encoding='utf-8') as f:
     content = f.read()
 
 print(f"✓ 已读取主文档，共 {len(content)} 字符")
+print(f"  文件路径：{main_doc_path}")
 print(f"  总行数：{len(content.splitlines())}")
 ```
 
@@ -647,7 +658,7 @@ print(f"  总行数：{len(content.splitlines())}")
   },
   "analysisMethod": "AI 语义识别",
   "generatedAt": "2026-04-09T12:00:00",
-  "sourceFile": "主文档.txt",
+  "sourceFile": "主文档.md",  // 或 "主文档.txt"，根据实际文件类型
   "totalLines": 5000,
   "totalSections": 25
 }
@@ -670,7 +681,7 @@ print(f"  总行数：{len(content.splitlines())}")
 **文件信息**（必须包含）：
 - `analysisMethod`：固定为"AI 语义识别"
 - `generatedAt`：当前时间（ISO 格式）
-- `sourceFile`：来源文件名（"主文档.txt"）
+- `sourceFile`：来源文件名（"主文档.md" 或 "主文档.txt"，根据实际文件类型）
 - `totalLines`：文档总行数
 - `totalSections`：识别的章节总数
 
@@ -777,7 +788,7 @@ print(f"  总行数：{len(content.splitlines())}")
 | 文档格式 | 处理方式 | 保存路径 |
 |---------|---------|---------|
 | **PDF** | 使用 pdfplumber 提取文本 | `${CONTEXT_DIR}/补充文档-{名称}.txt` |
-| **Markdown (.md)** | 直接复制文件内容 | `${CONTEXT_DIR}/补充文档-{名称}.txt` |
+| **Markdown (.md)** | 直接复制文件内容（保持原格式） | `${CONTEXT_DIR}/补充文档-{名称}.md` |
 | **文本 (.txt)** | 直接复制文件内容 | `${CONTEXT_DIR}/补充文档-{名称}.txt` |
 | **Word (.docx)** | 使用 python-docx 提取文本 | `${CONTEXT_DIR}/补充文档-{名称}.txt` |
 
@@ -816,6 +827,7 @@ print(f"✓ PDF 解析完成，保存到：{output_path}")
 
 ```python
 import json
+import os
 
 # 读取项目配置
 with open(f"{PROJECT_DIR}/project-config.json", 'r', encoding='utf-8') as f:
@@ -824,18 +836,31 @@ CONTEXT_DIR = config["CONTEXT_DIR"]
 
 # 源文件路径（用户上传的文件）
 source_path = "用户上传的 MD/TXT 文件路径"  # ← AI 需替换为实际路径
-doc_name = "补充文档名称"
+doc_name = "补充文档名称"  # ← AI 需替换，如"管理平台"
+
+# 根据源文件扩展名决定目标扩展名（保持原格式）
+source_ext = os.path.splitext(source_path)[1].lower()
+if source_ext == '.md':
+    output_path = f"{CONTEXT_DIR}/补充文档-{doc_name}.md"
+    file_type = "Markdown"
+elif source_ext == '.txt':
+    output_path = f"{CONTEXT_DIR}/补充文档-{doc_name}.txt"
+    file_type = "文本"
+else:
+    # 默认使用 .txt
+    output_path = f"{CONTEXT_DIR}/补充文档-{doc_name}.txt"
+    file_type = "文本"
 
 # 复制文件内容
 with open(source_path, 'r', encoding='utf-8') as src:
     content = src.read()
 
-# 保存到上下文文件
-output_path = f"{CONTEXT_DIR}/补充文档-{doc_name}.txt"
 with open(output_path, 'w', encoding='utf-8') as dst:
     dst.write(content)
 
-print(f"✓ 文档复制完成，保存到：{output_path}")
+print(f"✓ {file_type}文档复制完成，保存到：{output_path}")
+print(f"  文本长度：{len(content)} 字符")
+print(f"  文件格式：{source_ext}")
 ```
 
 **Word 文档处理代码**：
@@ -874,7 +899,7 @@ print(f"✓ Word 文档解析完成，保存到：{output_path}")
 
 **执行时机**：第一步文档解析完成后，立即执行
 
-**输入文件**：`${CONTEXT_DIR}/补充文档-{名称}.txt`（第一步已生成）
+**输入文件**：`${CONTEXT_DIR}/补充文档-{名称}.md` 或 `${CONTEXT_DIR}/补充文档-{名称}.txt`（第一步已生成）
 
 **AI 必须执行**：
 
@@ -925,7 +950,7 @@ print(f"✓ Word 文档解析完成，保存到：{output_path}")
   },
   "analysisMethod": "AI 语义识别",
   "generatedAt": "2026-04-09T12:00:00",
-  "sourceFile": "补充文档 - 管理平台.txt",
+  "sourceFile": "补充文档 - 管理平台.md",  // 或 ".txt"，根据实际文件类型
   "totalLines": 3000,
   "totalSections": 15
 }
@@ -1068,9 +1093,12 @@ for file_path in section_index_files:
     # 提取文档名称（从文件名解析）
     doc_name = file_path.split("section-index-补充文档-")[1].replace(".json", "")
     
+    # 从section-index中获取实际的sourceFile（可能是.md或.txt）
+    source_file = supplement.get("sourceFile", f"补充文档 - {doc_name}.txt")
+    
     supplementary_docs.append({
         "docName": f"补充文档 - {doc_name}",
-        "filePath": f"补充文档 - {doc_name}.txt",
+        "filePath": source_file,  # 使用实际文件名（支持.md/.txt）
         "sectionCount": len(supplement.get("sections", {}))
     })
 ```
@@ -1124,7 +1152,7 @@ print(f"  补充文档章节数：{len(supplementary_docs)} 个")
 
 **AI 必须执行**：
 
-1. 逐章节阅读原文档（主文档.txt + 补充文档-{名称}.txt）
+1. 逐章节阅读原文档（主文档.md/.txt + 补充文档-{名称}.md/.txt）
 2. 识别每个章节的引用关系（同文档内引用 + 跨文档引用）
 3. 将引用关系添加到 document-index.json 对应章节的 references 字段
 
@@ -1258,7 +1286,7 @@ print(f"  补充文档数：{len(doc_index['supplementaryDocs'])}")
   "supplementaryDocs": [
     {
       "docName": "补充文档 - 管理平台",
-      "filePath": "补充文档 - 管理平台.txt",
+      "filePath": "补充文档 - 管理平台.md",  // 或 ".txt"，根据实际文件类型
       "sectionCount": 5
     }
   ],
@@ -1797,8 +1825,8 @@ python3 verify_existing_apis.py ${CONTEXT_DIR}/existing-apis.json
 | ❌ 失败项 > 0，循环次数 ≥ 2 | 输出剩余失败项，提示用户确认 |
 
 **循环修正限制**：
-- 最大循环次数：2次
-- 循环2次后仍有失败项，输出失败详情供用户决策
+- 最大循环次数：5次
+- 循环5次后仍有失败项，输出失败详情供用户决策
 
 ---
 
@@ -2320,10 +2348,49 @@ print("✓ 自动进入第 4 章：模块处理流程")
 > 
 > **输出文件**：`${OUTPUT_DIR}/MXX_模块名_详细设计.md`（一个模块一个文件）
 
+---
+
+**⚠️ 分步执行提醒**（最高优先级，避免响应超时）：
+
+> **description部分已定义强制分步骤输出规则**，AI执行第4章时必须遵守：
+> 
+> **执行方式**：
+> - 使用**Edit工具分批次追加**内容，禁止一次性Write完整文档
+> - 每个步骤单独调用Edit，**自动连续执行**（无需等待用户确认）
+> 
+> **步骤顺序**（严格按序执行）：
+> - 步骤1：Edit追加 → 4.1 业务流程设计（流程图+状态机+字段流转表）
+> - 步骤2：Edit追加 → 4.2 核心逻辑设计（伪代码+业务规则+调用链路）
+> - 步骤3：Edit追加 → 4.3 接口设计前半部分（API-01到API-08）
+> - 步骤4：Edit追加 → 4.3 接口设计后半部分（API-09到API-XX）
+> - 步骤5：Edit追加 → 4.4 数据库设计（表结构+DDL+索引）
+> - 步骤6：Edit追加 → 4.5 三遍校验+验证脚本执行结果
+> - 步骤7：Bash运行 → verify.sh验证脚本
+> 
+> **进度提示格式**（每个步骤开始前输出）：
+> - `【执行步骤 X】正在生成：{内容描述}`
+> - 步骤完成后输出：`→ 自动继续执行步骤 X+1`
+> 
+> **禁止行为**：
+> - ❌ 一次性Write完整文档（会导致响应超时）
+> - ❌ 等待用户输入"继续"或"下一步"
+> - ❌ 跳过验证脚本执行
+> - ❌ 省略任何章节（4.1-4.5都必须完整输出）
 
 ---
 
 ### 4.0 准备阶段
+
+**📌 输入依赖**（来自第3章）：
+- `${CONTEXT_DIR}/module-todo.json` - 模块任务列表（包含选中的模块Key和执行模式）
+- `${CONTEXT_DIR}/document-index.json` - 需求章节索引
+- `${CONTEXT_DIR}/existing-apis.json` - 现有代码接口分析
+
+**📌 输出传递**（传递给4.1）：
+- 模块状态标记为`in_progress` - 供后续章节记录执行进度
+- 设计标准引用准备 - 供4.1-4.5各章节参考质量标准
+
+---
 
 **第一步：读取设计标准文档**（强制执行）
 
@@ -2365,6 +2432,22 @@ json.dump(todo_data, open('${CONTEXT_DIR}/module-todo.json', 'w'), ensure_ascii=
 
 ### 4.1 业务流程设计
 
+**📌 输入依赖**（来自第3章和4.0）：
+- `${CONTEXT_DIR}/document-index.json` - 需求章节索引（第3章生成）
+- `${CONTEXT_DIR}/existing-apis.json` - 现有代码接口分析（第2章生成）
+- `${CONTEXT_DIR}/主文档.md` 或 `${CONTEXT_DIR}/主文档.txt` - 需求文档全文（第1章生成）
+- `../SKILL-STANDARDS.md` - 设计质量标准（4.0已读取）
+- 模块Key - 当前要处理的模块编号（来自module-todo.json）
+
+**📌 输出传递**（传递给4.2）：
+- 业务流程图 → 供4.2识别技术挑战（跨系统调用、多步骤依赖等）
+- 状态设计 → 供4.2设计状态机逻辑（如有）
+- 场景推演 → 供4.3接口设计参考异常场景
+- 字段流转表 → 供4.4数据库设计参考字段设计
+- 业务特征识别结果 → 供后续章节判断复杂度（简单/中等/复杂）
+
+---
+
 #### 第一步：读取业务流程上下文
 
 **读取文件清单**：
@@ -2374,8 +2457,8 @@ json.dump(todo_data, open('${CONTEXT_DIR}/module-todo.json', 'w'), ensure_ascii=
 | `../SKILL-STANDARDS.md` | 质量标准参考（需要时查阅） | ✅ |
 | `${CONTEXT_DIR}/document-index.json` | 需求章节索引 | ✅ |
 | `${CONTEXT_DIR}/existing-apis.json` | 现有代码接口分析 | ✅ |
-| `${CONTEXT_DIR}/主文档.txt` | 需求文档全文 | 按需读取 |
-| `${CONTEXT_DIR}/补充文档-*.txt` | 补充文档 | 按需读取 |
+| `${CONTEXT_DIR}/主文档.md` 或 `${CONTEXT_DIR}/主文档.txt` | 需求文档全文 | 按需读取 |
+| `${CONTEXT_DIR}/补充文档-*.md` 或 `${CONTEXT_DIR}/补充文档-*.txt` | 补充文档 | 按需读取 |
 
 **现有代码分析**（必须填写）：
 
@@ -2493,94 +2576,12 @@ json.dump(todo_data, open('${CONTEXT_DIR}/module-todo.json', 'w'), ensure_ascii=
 - 识别结果为"中等"：每场景≥10 步，展示完整状态变化
 - 识别结果为"复杂"：每场景≥20 步，展示每步状态变化（参考 M04 场景推演）
 
-**场景推演模板**（必须按此格式，标注现有接口）：
+**场景推演模板要求**：
+- 必须按标准格式输出（时间线 + 参与方状态对比）
+- 必须标注每步的：步骤序号、操作内容、API调用、接口来源（【复用】/【新增】）、所有状态变化
+- 必须标注关键决策点（如"如果同意"/"如果修改"）
 
-```
-**场景一：正常流程（一次成功）**
-
-时间线                        参与方 A 状态                  参与方 B 状态
-────────────────────────────────────────────────────────────────────────────
-1. A 创建 X                   状态 A=初始值                   (X 不存在)
-   A 操作 Y                   主状态=初始值
-   creator_sign=1
-   receiver_sign=0
-
-2. A 推送 B
-   POST /xxx/receive
-   【复用】existing-api.json 中的接口
-   {version=v1.0, signature_A, content_hash_A}
-
-3. B 接收后                   状态 A=初始值                  状态 B=初始值
-   创建 X                    主状态=初始值                  主状态=初始值
-   【新增】需要新增的接口     creator_sign=1                 creator_sign=1
-                             receiver_sign=0                receiver_sign=0
-
-4. B 签署                     状态 A=初始值                  状态 B=已签署
-   POST /xxx/sign            主状态=初始值                  主状态=已生效
-   【复用】existing-api.json  creator_sign=1                 creator_sign=1
-   {version=v1.0, signature_B}                             receiver_sign=1
-
-5. A 接收通知                 状态 A=已签署
-   检查双方签名               主状态=已生效
-   creator_sign=1 ✓          creator_sign=1
-   receiver_sign=1 ✓         receiver_sign=1
-   ↓
-   推送管理端备案
-
-6. 备案成功                   状态 A=已备案                  状态 B=已备案
-   filing_success=1          filing_success=1               filing_success=1
-   filingNo=xxx              filingNo=xxx                   filingNo=xxx
-```
-
-**场景二：协商修改流程（多轮磋商）**
-
-```
-时间线                        参与方 A 状态                  参与方 B 状态
-────────────────────────────────────────────────────────────────────────────
-1. A 创建 X (v1.0)           状态 A=初始值                   (X 不存在)
-   A 签署 v1.0               主状态=协商中
-   creator_sign=1
-   receiver_sign=0
-
-2. A 推送 B
-   POST /xxx/receive
-   {version=v1.0, signature_A, content_hash_A}
-
-3. B 接收后                   状态 A=初始值                  状态 B=初始值
-   创建 X                    主状态=协商中                  主状态=协商中
-   creator_sign=1            creator_sign=1                 creator_sign=1
-   receiver_sign=0           receiver_sign=0                receiver_sign=0
-
-4. B 修改为 v1.1，并签署     状态 A=初始值                  状态 A=已修改
-   推送 A                    主状态=协商中                  主状态=协商中
-   POST /xxx/receive         creator_sign=0  ← 内容修改     creator_sign=0
-   {version=v1.1, signature_B, content_hash_B}             receiver_sign=1
-                             receiver_sign=0
-
-5. A 接收后
-   检查 content_hash 变化
-   hash_A ≠ hash_B → 内容变更
-   清空双方状态               状态 A=初始值
-   更新为 v1.1               主状态=协商中
-   creator_sign=0
-   receiver_sign=1
-
-6. A 同意 v1.1，签署         状态 A=已签署
-   推送 B                    主状态=已生效
-   POST /xxx/sign            creator_sign=1
-   {version=v1.1, signature_A, content_hash_B}             receiver_sign=1
-
-7. B 接收后                                                  状态 B=已签署
-   检查 content_hash 一致                                     主状态=已生效
-   hash_B == hash_B ✓                                         creator_sign=1
-   保存 A 签名                                                   receiver_sign=1
-   ↓
-   推送管理端备案
-
-8. 备案成功                   状态 A=已备案                  状态 B=已备案
-   filing_success=1          filing_success=1               filing_success=1
-   filingNo=xxx              filingNo=xxx                   filingNo=xxx
-```
+> **详细模板示例见附录 G：业务流程设计 - 场景推演详细模板示例**
 
 **每一步必须标注**：
 - 步骤序号（1. 2. 3. ...）
@@ -2617,46 +2618,109 @@ json.dump(todo_data, open('${CONTEXT_DIR}/module-todo.json', 'w'), ensure_ascii=
 
 #### 第七步：整理输出文档
 
-**文档结构**（必须按此顺序）：
+**文档结构**（必须按此顺序，章节名称与执行章节统一）：
 
 ```markdown
 # MXX 模块名 详细设计
 
-## 1. 需求对照分析
-1.1 需求原文
-1.2 现有代码分析
-1.3 状态流转说明
+## 4.1 业务流程设计
+### 4.1.1 需求对照分析
+- 需求原文摘录（标注章节来源）
+- 现有代码分析（Controller/Task/表）
 
-## 2. 业务流程设计
-2.1 业务特征识别
-2.2 业务流程图
-2.3 流程说明
-2.4 关键设计
+### 4.1.2 业务特征识别
+- 业务特征识别表
+- 业务特征→设计决策对照表
 
-## 3. 状态设计
-3.1 主状态流转图
-3.2 独立状态字段（如有）
-3.3 状态组合矩阵表（如有）
-3.4 按钮显示条件表（如有）
+### 4.1.3 业务流程图
+- 流程图类型选择依据
+- 完整流程图（泳道图/时序图/状态图）
+- 流程说明（逐步骤标注API调用）
 
-## 4. 场景推演
-4.1 场景一：正常流程
-4.2 场景二：异常/协商流程
+### 4.1.4 状态设计
+- 状态设计决策树执行记录
+- 主状态流转图
+- 独立状态字段（如有）
+- 状态组合矩阵表（如有）
+- 按钮显示条件表（如有）
 
-## 5. 异常场景分析
+### 4.1.5 场景推演
+- 场景一：正常流程（时间线+状态对比）
+- 场景二：异常/协商流程（如有）
 
-## 6. 字段流转表
+### 4.1.6 异常场景分析
+- 异常场景表（发现方式/反馈方式/恢复方式/预防措施）
 
-## 7. 架构设计
+### 4.1.7 字段流转表
+- 关键字段流转路径（从输入到持久化）
 
-## 8. 接口设计
+## 4.2 核心逻辑设计
+### 4.2.1 核心逻辑识别结果
+- 从需求识别的核心逻辑（需求依据）
+- 从流程识别的核心逻辑（流程环节）
 
-## 9. 数据库设计
+### 4.2.2 每个核心逻辑详细设计
+- 核心逻辑1：{名称}
+  - 识别来源、设计要点、伪代码、数据流转
+- 核心逻辑2：{名称}
+  - ...
 
-## 10. 双向校验
+### 4.2.3 架构设计（如适用，复杂业务必选）
+- 适用场景判断依据
+- 设计模式选择
+- 类图（接口→抽象基类→实现类）
+- 核心接口定义（20+行）
+- 抽象基类实现（100+行）
+- 具体实现类示例（150+行）
+
+## 4.3 接口设计
+### 4.3.1 接口分类与清单
+- 接口分类决策树
+- 接口清单表（标注改造标识和现有代码来源）
+
+### 4.3.2 每个接口详细设计（所有接口完整展开）
+- MXX-API-01：接口名称
+  - 现有代码分析、接口基本信息、请求参数、响应参数、业务逻辑、错误码
+- MXX-API-02：接口名称
+  - ...
+- ...（严禁省略）
+
+## 4.4 数据库设计
+### 4.4.1 现有表分析
+- 现有表清单（标注复用策略）
+- 需要新建的表
+
+### 4.4.2 每张表详细设计
+- 表名：t_xxx
+  - 建表语句（DDL）
+  - 字段说明表（标注来源）
+  - 索引设计（≥5个）
+  - 状态枚举
+
+## 4.5 验证与校验
+### 4.5.1 三遍校验记录
+- 第一遍：需求→设计追溯
+- 第二遍：设计→需求回溯
+- 第三遍：完整性校验
+
+### 4.5.2 验证脚本执行结果
+- verify.sh执行输出
+- 验证结论（AAA+/A/B/C）
+
+### 4.5.3 质量评分
+- 质量评分表（总分≥85分）
+
+## 附录（可选）
+- 伪代码完整版本
+- 详细业务规则说明
 ```
 
-**输出文件**：`${OUTPUT_DIR}/MXX_模块名_详细设计_完整版.md`
+**输出文件**：`${OUTPUT_DIR}/MXX_模块名_详细设计.md`
+
+**⚠️ 文档结构与执行章节对照说明**：
+- 文档章节名称 = 执行章节名称（4.1、4.2、4.3、4.4、4.5）
+- 文档子章节编号 = 执行步骤编号（4.1.1、4.1.2...）
+- 确保输出的文档结构与执行流程一致，便于追溯
 
 **【4.1 自检清单】**（完成后勾选）：
 - [ ] 业务特征识别表已填写
@@ -2674,6 +2738,21 @@ json.dump(todo_data, open('${CONTEXT_DIR}/module-todo.json', 'w'), ensure_ascii=
 ---
 
 ### 4.2 核心逻辑设计（⚠️ 基于需求和流程识别）
+
+**📌 输入依赖**（来自4.1）：
+- 4.1业务流程图 → 识别技术挑战（跨系统调用、多步骤依赖、定时触发等）
+- 4.1状态设计 → 设计状态机逻辑（如有状态≥5个）
+- 4.1场景推演 → 识别异常处理逻辑
+- 需求文档 → 识别特殊业务规则（多方协作、数据安全、复杂校验等）
+- 业务特征识别结果 → 判断是否需要架构设计（复杂/中等/简单）
+
+**📌 输出传递**（传递给4.3）：
+- 核心逻辑清单 → 供4.3接口设计参考业务逻辑实现
+- 架构设计类图 → 供4.3接口设计参考类结构和调用链路
+- 数据流转说明 → 供4.4数据库设计参考字段来源
+- 伪代码 → 供4.3接口业务逻辑参考
+
+---
 
 **⚠️ 重要原则**：
 - ❌ 禁止展示分层架构图（Controller→Service→Mapper）- 这是形式化内容
@@ -2770,6 +2849,23 @@ json.dump(todo_data, open('${CONTEXT_DIR}/module-todo.json', 'w'), ensure_ascii=
 
 ---
 
+**⚠️ 核心逻辑设计包含两部分**：
+
+| 部分 | 必要性 | 判断依据 |
+|-----|-------|---------|
+| **业务核心逻辑** | 必选 | 所有模块都必须从需求和流程中识别核心逻辑 |
+| **架构设计** | 可选 | 根据4.1业务特征识别结果判断是否需要 |
+
+**架构设计触发条件判断**（基于4.1识别结果）：
+
+| 4.1业务特征识别结果 | 架构设计必要性 | 说明 |
+|-------------------|--------------|-----|
+| **复杂**（参与方≥5方、状态≥5个、异常≥10种） | **必须包含** | 涉及多类型数据源、多连接器协作、规则引擎、状态机流转 |
+| **中等**（参与方3-4方、状态3-5个、异常6-10种） | **建议包含** | 涉及一定复杂度的业务逻辑，设计模式可简化实现 |
+| **简单**（参与方≤2方、状态≤3个、异常≤5种） | **可省略** | 简单CRUD模块，无需架构设计 |
+
+---
+
 #### 架构设计详细要求（复杂业务场景必须执行）
 
 **适用场景**：
@@ -2781,198 +2877,14 @@ json.dump(todo_data, open('${CONTEXT_DIR}/module-todo.json', 'w'), ensure_ascii=
 
 **架构设计必须包含**：
 
-```markdown
-### 架构设计类图
+1. **设计模式**：工厂模式/策略模式/模板方法模式等（根据业务场景选择）
+2. **架构设计类图**：展示接口→抽象基类→实现类的层次结构
+3. **核心接口定义**：完整的方法签名和注释（20+ 行）
+4. **抽象基类实现**：公共逻辑实现（100+ 行）
+5. **具体实现类示例**：典型实现（150+ 行）
+6. **配置传输对象**：DTO/VO完整定义
 
-**设计模式**：工厂模式 + 策略模式
-
-**类图**：
-```
-┌─────────────────────────────────┐
-│  <<interface>>                  │
-│  XxxxConnector                  │
-├─────────────────────────────────┤
-│ + connect(config): Connection   │
-│ + testConnection(config): Result│
-│ + validateConfig(config): void  │
-└─────────────────────────────────┘
-               ▲
-               │
-┌──────────────┴──────────────┐
-│  <<abstract>>               │
-│  AbstractXxxxConnector      │
-├─────────────────────────────┤
-│ + validateConfig(config)    │
-│ + encryptSensitiveData()    │
-│ + getConnectionPool()       │
-│ - abstract doValidateConfig()│
-│ - abstract connect()         │
-└─────────────────────────────┘
-               ▲
-    ┌──────────┼──────────┐
-    │          │          │
-┌───┴───┐ ┌───┴───┐ ┌───┴───┐
-│ TypeA │ │ TypeB │ │ TypeC │
-└───────┘ └───────┘ └───────┘
-```
-
-### 核心接口定义
-
-```java
-public interface XxxxConnector {
-    /**
-     * 建立连接
-     * @param config 配置对象
-     * @return 连接对象
-     */
-    Connection connect(XxxxConfigDto config);
-    
-    /**
-     * 测试连接
-     * @param config 配置对象
-     * @return 测试结果
-     */
-    CommonResult<?> testConnection(XxxxConfigDto config);
-    
-    /**
-     * 验证配置
-     * @param config 配置对象
-     */
-    void validateConfig(XxxxConfigDto config);
-    
-    /**
-     * 获取类型
-     * @return 类型代码
-     */
-    String getType();
-}
-```
-
-### 抽象基类实现（公共逻辑）
-
-```java
-public abstract class AbstractXxxxConnector implements XxxxConnector {
-    
-    @Resource
-    protected Sm4Util sm4Util;
-    
-    /**
-     * 验证配置（模板方法）
-     */
-    @Override
-    public void validateConfig(XxxxConfigDto config) {
-        // 公共验证
-        if (config == null) {
-            throw new ServiceException("配置不能为空");
-        }
-        
-        // 子类扩展验证
-        doValidateConfig(config);
-    }
-    
-    /**
-     * 子类扩展验证（模板方法）
-     */
-    protected abstract void doValidateConfig(XxxxConfigDto config);
-    
-    /**
-     * 加密敏感数据
-     */
-    protected String encryptSensitiveData(String plainText) {
-        return sm4Util.encrypt(plainText, "");
-    }
-    
-    /**
-     * 测试连接（带重试）
-     */
-    @Override
-    public CommonResult<?> testConnection(XxxxConfigDto config) {
-        int maxRetry = 3;
-        for (int i = 0; i < maxRetry; i++) {
-            try {
-                Connection conn = connect(config);
-                conn.close();
-                return CommonResult.success("连接成功");
-            } catch (Exception e) {
-                if (i == maxRetry - 1) {
-                    return CommonResult.failed("连接失败：" + e.getMessage());
-                }
-            }
-        }
-    }
-}
-```
-
-### 具体实现类示例
-
-```java
-@Component
-public class MySQLConnector extends AbstractXxxxConnector {
-    
-    private static final int DEFAULT_PORT = 3306;
-    
-    @Override
-    protected void doValidateConfig(XxxxConfigDto config) {
-        if (StringUtils.isBlank(config.getDatabase())) {
-            throw new ServiceException("database 不能为空");
-        }
-    }
-    
-    @Override
-    public Connection connect(XxxxConfigDto config) {
-        String jdbcUrl = String.format(
-            "jdbc:mysql://%s:%d/%s",
-            config.getHost(),
-            config.getPort() != null ? config.getPort() : DEFAULT_PORT,
-            config.getDatabase()
-        );
-        return DriverManager.getConnection(
-            jdbcUrl,
-            config.getUsername(),
-            decryptSensitiveData(config.getPassword())
-        );
-    }
-    
-    @Override
-    public String getType() {
-        return "MYSQL";
-    }
-}
-```
-
-### 配置传输对象
-
-```java
-@Data
-public class XxxxConfigDto {
-    private String type;
-    private String host;
-    private Integer port;
-    private String database;
-    private String username;
-    private String password;
-    
-    // 类型差异化配置
-    private String connectionType;  // Oracle
-    private String serviceName;     // Oracle
-    private String authType;        // SFTP/API
-    private String privateKey;      // SFTP
-    
-    /**
-     * 从实体转换
-     */
-    public static XxxxConfigDto fromEntity(EdbXxxx entity) {
-        XxxxConfigDto dto = new XxxxConfigDto();
-        dto.setHost(entity.getHost());
-        dto.setPort(entity.getPort());
-        // ... 其他字段
-        return dto;
-    }
-}
-```
-```
-
----
+> **详细架构设计代码示例见附录 H：核心逻辑设计 - 架构设计代码示例**
 
 **代码深度要求**：
 - ✅ 接口定义：完整的方法签名和注释（20+ 行）
@@ -3001,96 +2913,6 @@ public class XxxxConfigDto {
 - `../SKILL-STANDARDS.md` → "二、核心逻辑设计标准" 中的"核心逻辑设计示例"
 
 
-#### 核心逻辑设计示例（合约管理 - 双方签署）
-
-```markdown
-### 核心逻辑 1：双方签署同一版本后才备案
-
-**识别来源**：
-- 需求依据：MD 第 3.3 章"数字合约管理" - "合约签署（使用主体私钥签名）"
-- 4.1 流程：流程 1 第 18 步"双方都签署 v1 后备案"
-- 业务问题：需方和供方可能签署不同版本，需确保双方对同一版本签名后才备案
-
-**设计要点**：
-1. **核心机制**：
-   - 版本控制：每次修改 version+1
-   - 签署状态独立：creator_sign_status / receiver_sign_status
-   - 备案条件：creator_sign=1 AND receiver_sign=1 AND 同一 version
-
-2. **关键实现位置**：
-   - `ContractService.sign()` - 签署逻辑
-   - `ContractService.checkFilingCondition()` - 备案条件检查
-   - `ContractFilingTask.execute()` - 定时扫描备案
-
-3. **依赖的公共组件**：
-   - `initiatorAuthUtil.doBidirectionalAuth()` - 双向身份认证
-   - `SignatureUtils.sign()` - 使用主体私钥签名
-   - `SignatureUtils.verify()` - 验签
-
-4. **异常处理**：
-   - 验签失败：返回"签名无效"，状态不变
-   - 版本不一致：返回"版本已变更，需重新签署"
-   - 备案失败：filing_success=0，定时任务重试
-
-5. **性能考虑**：
-   - QPS 预估：100 次/分钟（签署操作低频）
-   - 缓存策略：合约详情缓存 5 分钟
-   - 限流策略：单用户 10 次/分钟（防止恶意签署）
-
-**实现伪代码**：
-```java
-// ContractService.sign()
-public void sign(Long contractId, Integer version, String signature) {
-    // 1. 双向身份认证
-    initiatorAuthUtil.doBidirectionalAuth();
-    
-    // 2. 获取合约
-    Contract contract = contractMapper.selectById(contractId);
-    
-    // 3. 版本校验
-    if (!version.equals(contract.getVersion())) {
-        throw new BusinessException("版本已变更，当前版本：" + contract.getVersion());
-    }
-    
-    // 4. 验签
-    boolean valid = SignatureUtils.verify(contract.getContent(), signature, currentUser.getPublicKey());
-    if (!valid) {
-        throw new BusinessException("签名无效");
-    }
-    
-    // 5. 更新签署状态
-    if (currentUser.isCreator()) {
-        contract.setCreatorSignStatus(1);
-        contract.setCreatorSignature(signature);
-    } else {
-        contract.setReceiverSignStatus(1);
-        contract.setReceiverSignature(signature);
-    }
-    
-    // 6. 检查备案条件
-    if (contract.getCreatorSignStatus() == 1 
-        && contract.getReceiverSignStatus() == 1) {
-        contract.setStatus(2); // 已生效
-        contract.setFilingTime(new Date());
-    }
-    
-    contractMapper.update(contract);
-}
-```
-
-**接口复用性分析**：
-- 可复用的现有接口：
-  - `POST /contract/negotiate` - 协商接口（复用双向认证逻辑）
-  - `GET /contract/detail` - 详情接口（复用查询逻辑）
-- 需新增的接口：
-  - `POST /contract/sign` - 签署接口（新增签署逻辑）
-
-**数据流转说明**：
-- 输入字段：contractId、version、signature → 来自前端签署操作
-- 输出字段：creator_sign_status、receiver_sign_status → 持久化到 t_contract 表
-- 持久化字段：t_contract.creator_sign_status、t_contract.status、t_contract.filing_time
-```
-
 ---
 
 **【4.2 自检清单】**（完成后勾选）：
@@ -3107,6 +2929,20 @@ public void sign(Long contractId, Integer version, String signature) {
 ---
 
 ### 4.3 接口设计
+
+**📌 输入依赖**（来自4.1和4.2）：
+- 4.1业务流程图 → 确定接口调用顺序和交互方
+- 4.1场景推演 → 确定异常场景处理逻辑
+- 4.2核心逻辑清单 → 确定接口业务逻辑实现要点
+- 4.2架构设计类图 → 确定接口调用的类和方法（如有架构设计）
+- `${CONTEXT_DIR}/existing-apis.json` → 确定现有代码来源和改造标识
+
+**📌 输出传递**（传递给4.4）：
+- 接口清单 → 供4.4确定需要哪些表和字段
+- 请求/响应参数 → 供4.4设计表字段（字段来源标注）
+- 业务逻辑步骤 → 供4.4设计字段流转和状态更新
+
+---
 
 **接口分类决策树**：
 
@@ -3209,6 +3045,20 @@ public void sign(Long contractId, Integer version, String signature) {
 
 ### 4.4 数据库设计
 
+**📌 输入依赖**（来自4.1、4.2、4.3）：
+- 4.1状态设计 → 确定状态字段和状态枚举
+- 4.1字段流转表 → 确定字段设计需求
+- 4.2数据流转说明 → 确定字段来源和持久化需求
+- 4.3请求/响应参数 → 确定表字段设计（标注来源）
+- `${CONTEXT_DIR}/existing-apis.json` → 确定现有表结构和复用策略
+
+**📌 输出传递**（传递给4.5）：
+- 建表语句（DDL） → 供4.5验证需求覆盖度
+- 字段说明表 → 供4.5验证设计必要度（标注需求依据）
+- 索引设计 → 供4.5验证完整性
+
+---
+
 **现有表分析**（必须填写）：
 
 ```markdown
@@ -3308,7 +3158,7 @@ CREATE TABLE `t_xxx` (
 
 ---
 
-### 4.5 完成后：执行验证脚本（强制执行）
+#### 4.5.1 执行验证脚本（强制执行）
 
 **参考**：附录 D - 验证脚本使用说明
 
@@ -3317,7 +3167,7 @@ CREATE TABLE `t_xxx` (
 ```bash
 # 执行验证脚本
 bash verify.sh <模块编号> <文档路径>
-# 示例：bash verify.sh M05 "/Users/xx/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
+# 示例：bash verify.sh M05 "/Users/zhangwanyu/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
 ```
 
 **验证标准（严格要求）**：
@@ -3355,6 +3205,18 @@ bash verify.sh <模块编号> <文档路径>
 - ✅ 针对性修正（只修改验证失败的部分）
 - ✅ 增量更新（补充缺失内容，不是推倒重来）
 - ❌ 禁止完全重新生成（浪费且容易丢失已有合格内容）
+
+---
+
+**【4.5 自检清单】**（完成后勾选）：
+- [ ] 三遍校验已执行（需求→设计追溯、设计→需求回溯、完整性校验）
+- [ ] 校验结论已输出（通过/不通过）
+- [ ] 质量评分表已填写
+- [ ] verify.sh验证脚本已执行
+- [ ] 验证结果达标（≥95分 + 覆盖率100% + 必要度100%）
+- [ ] 验证失败已修正（如有）
+
+**完成后**：进入 4.6 更新状态并完成
 
 ---
 
@@ -4054,7 +3916,7 @@ print("=" * 60)
 
 ## 附录 D：验证脚本使用说明（强制执行）
 
-**脚本位置**：`/Users/xx/Downloads/req-to-design_a/verify.sh`
+**脚本位置**：`/Users/zhangwanyu/Downloads/req-to-design_a/verify.sh`
 
 **使用方式**：
 
@@ -4063,7 +3925,7 @@ print("=" * 60)
 bash verify.sh <模块编号> <文档路径>
 
 # 示例
-bash verify.sh M05 "/Users/xx/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
+bash verify.sh M05 "/Users/zhangwanyu/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
 ```
 
 **执行时机**：
@@ -4443,6 +4305,492 @@ print(f"   CONTEXT_DIR: {CONTEXT_DIR}  ← 上下文文件保存位置")
 print(f"   OUTPUT_DIR: {OUTPUT_DIR}    ← 设计文档保存位置")
 print(f"   FEEDBACK_DIR: {FEEDBACK_DIR}  ← 反馈文件保存位置")
 print("\n✓ 初始化完成，进入第 1 章：文档解析")
+```
+
+---
+
+## 附录 G：业务流程设计 - 场景推演详细模板示例
+
+> **引用位置**：第4章 4.1 业务流程设计 第五步场景推演
+> **用途**：AI执行场景推演时参考此示例，确保格式规范
+
+### G.1 场景推演模板格式（必须按此格式，标注现有接口）
+
+**场景一：正常流程（一次成功）**
+
+```
+时间线                        参与方 A 状态                  参与方 B 状态
+────────────────────────────────────────────────────────────────────────────
+1. A 创建 X                   状态 A=初始值                   (X 不存在)
+   A 操作 Y                   主状态=初始值
+   creator_sign=1
+   receiver_sign=0
+
+2. A 推送 B
+   POST /xxx/receive
+   【复用】existing-api.json 中的接口
+   {version=v1.0, signature_A, content_hash_A}
+
+3. B 接收后                   状态 A=初始值                  状态 B=初始值
+   创建 X                    主状态=初始值                  主状态=初始值
+   【新增】需要新增的接口     creator_sign=1                 creator_sign=1
+                            receiver_sign=0                receiver_sign=0
+
+4. B 签署                     状态 A=初始值                  状态 B=已签署
+   POST /xxx/sign            主状态=初始值                  主状态=已生效
+   【复用】existing-api.json  creator_sign=1                 creator_sign=1
+   {version=v1.0, signature_B}                             receiver_sign=1
+
+5. A 接收通知                 状态 A=已签署
+   检查双方签名               主状态=已生效
+   creator_sign=1 ✓          creator_sign=1
+   receiver_sign=1 ✓         receiver_sign=1
+   ↓
+   推送管理端备案
+
+6. 备案成功                   状态 A=已备案                  状态 B=已备案
+   filing_success=1          filing_success=1               filing_success=1
+   filingNo=xxx              filingNo=xxx                   filingNo=xxx
+```
+
+**场景二：协商修改流程（多轮磋商）**
+
+```
+时间线                        参与方 A 状态                  参与方 B 状态
+────────────────────────────────────────────────────────────────────────────
+1. A 创建 X (v1.0)           状态 A=初始值                   (X 不存在)
+   A 签署 v1.0               主状态=协商中
+   creator_sign=1
+   receiver_sign=0
+
+2. A 推送 B
+   POST /xxx/receive
+   {version=v1.0, signature_A, content_hash_A}
+
+3. B 接收后                   状态 A=初始值                  状态 B=初始值
+   创建 X                    主状态=协商中                  主状态=协商中
+   creator_sign=1            creator_sign=1                 creator_sign=1
+   receiver_sign=0           receiver_sign=0                receiver_sign=0
+
+4. B 修改为 v1.1，并签署     状态 A=初始值                  状态 A=已修改
+   推送 A                    主状态=协商中                  主状态=协商中
+   POST /xxx/receive         creator_sign=0  ← 内容修改     creator_sign=0
+   {version=v1.1, signature_B, content_hash_B}             receiver_sign=1
+                            receiver_sign=0
+
+5. A 接收后
+   检查 content_hash 变化
+   hash_A ≠ hash_B → 内容变更
+   清空双方状态               状态 A=初始值
+   更新为 v1.1               主状态=协商中
+   creator_sign=0
+   receiver_sign=1
+
+6. A 同意 v1.1，签署         状态 A=已签署
+   推送 B                    主状态=已生效
+   POST /xxx/sign            creator_sign=1
+   {version=v1.1, signature_A, content_hash_B}             receiver_sign=1
+
+7. B 接收后                                                  状态 B=已签署
+   检查 content_hash 一致                                     主状态=已生效
+   hash_B == hash_B ✓                                         creator_sign=1
+   保存 A 签名                                                   receiver_sign=1
+   ↓
+   推送管理端备案
+
+8. 备案成功                   状态 A=已备案                  状态 B=已备案
+   filing_success=1          filing_success=1               filing_success=1
+   filingNo=xxx              filingNo=xxx                   filingNo=xxx
+```
+
+### G.2 每一步必须标注的内容
+
+- 步骤序号（1. 2. 3. ...）
+- 操作内容（如"A 创建 X"、"B 签署 v1.0"）
+- API 调用（如"POST /xxx/receive"）
+- 接口来源（【复用】/【新增】）
+- 所有状态变化（主状态/独立状态字段）
+- 关键决策点（如"如果同意"/"如果修改"）
+
+---
+
+## 附录 H：核心逻辑设计 - 架构设计代码示例
+
+> **引用位置**：第4章 4.2 核心逻辑设计 架构设计详细要求
+> **用途**：复杂业务场景执行架构设计时参考此示例，确保代码规范
+
+### H.1 适用场景判断
+
+- ✅ 涉及 6 种以上数据源类型（如数据源接入模块）
+- ✅ 涉及多连接器协作（如身份管理模块）
+- ✅ 涉及规则引擎（如数据使用控制模块）
+- ✅ 涉及状态机流转（如合约管理模块）
+- ❌ 简单 CRUD 模块可不包含架构设计
+
+### H.2 架构设计类图示例
+
+**设计模式**：工厂模式 + 策略模式
+
+```
+┌─────────────────────────────────┐
+│  <<interface>>                  │
+│  XxxxConnector                  │
+├─────────────────────────────────┤
+│ + connect(config): Connection   │
+│ + testConnection(config): Result│
+│ + validateConfig(config): void  │
+└─────────────────────────────────┘
+               ▲
+               │
+┌──────────────┴──────────────┐
+│  <<abstract>>               │
+│  AbstractXxxxConnector      │
+├─────────────────────────────┤
+│ + validateConfig(config)    │
+│ + encryptSensitiveData()    │
+│ + getConnectionPool()       │
+│ - abstract doValidateConfig()│
+│ - abstract connect()         │
+└─────────────────────────────┘
+               ▲
+    ┌──────────┼──────────┐
+    │          │          │
+┌───┴───┐ ┌───┴───┐ ┌───┴───┐
+│ TypeA │ │ TypeB │ │ TypeC │
+└───────┘ └───────┘ └───────┘
+```
+
+### H.3 核心接口定义示例
+
+```java
+public interface XxxxConnector {
+    /**
+     * 建立连接
+     * @param config 配置对象
+     * @return 连接对象
+     */
+    Connection connect(XxxxConfigDto config);
+    
+    /**
+     * 测试连接
+     * @param config 配置对象
+     * @return 测试结果
+     */
+    CommonResult<?> testConnection(XxxxConfigDto config);
+    
+    /**
+     * 验证配置
+     * @param config 配置对象
+     */
+    void validateConfig(XxxxConfigDto config);
+    
+    /**
+     * 获取类型
+     * @return 类型代码
+     */
+    String getType();
+}
+```
+
+### H.4 抽象基类实现示例（公共逻辑）
+
+```java
+public abstract class AbstractXxxxConnector implements XxxxConnector {
+    
+    @Resource
+    protected Sm4Util sm4Util;
+    
+    /**
+     * 验证配置（模板方法）
+     */
+    @Override
+    public void validateConfig(XxxxConfigDto config) {
+        // 公共验证
+        if (config == null) {
+            throw new ServiceException("配置不能为空");
+        }
+        
+        // 子类扩展验证
+        doValidateConfig(config);
+    }
+    
+    /**
+     * 子类扩展验证（模板方法）
+     */
+    protected abstract void doValidateConfig(XxxxConfigDto config);
+    
+    /**
+     * 加密敏感数据
+     */
+    protected String encryptSensitiveData(String plainText) {
+        return sm4Util.encrypt(plainText, "");
+    }
+    
+    /**
+     * 测试连接（带重试）
+     */
+    @Override
+    public CommonResult<?> testConnection(XxxxConfigDto config) {
+        int maxRetry = 3;
+        for (int i = 0; i < maxRetry; i++) {
+            try {
+                Connection conn = connect(config);
+                conn.close();
+                return CommonResult.success("连接成功");
+            } catch (Exception e) {
+                if (i == maxRetry - 1) {
+                    return CommonResult.failed("连接失败：" + e.getMessage());
+                }
+            }
+        }
+    }
+}
+```
+
+### H.5 具体实现类示例
+
+```java
+@Component
+public class MySQLConnector extends AbstractXxxxConnector {
+    
+    private static final int DEFAULT_PORT = 3306;
+    
+    @Override
+    protected void doValidateConfig(XxxxConfigDto config) {
+        if (StringUtils.isBlank(config.getDatabase())) {
+            throw new ServiceException("database 不能为空");
+        }
+    }
+    
+    @Override
+    public Connection connect(XxxxConfigDto config) {
+        String jdbcUrl = String.format(
+            "jdbc:mysql://%s:%d/%s",
+            config.getHost(),
+            config.getPort() != null ? config.getPort() : DEFAULT_PORT,
+            config.getDatabase()
+        );
+        return DriverManager.getConnection(
+            jdbcUrl,
+            config.getUsername(),
+            decryptSensitiveData(config.getPassword())
+        );
+    }
+    
+    @Override
+    public String getType() {
+        return "MYSQL";
+    }
+}
+```
+
+### H.6 配置传输对象示例
+
+```java
+@Data
+public class XxxxConfigDto {
+    private String type;
+    private String host;
+    private Integer port;
+    private String database;
+    private String username;
+    private String password;
+    
+    // 类型差异化配置
+    private String connectionType;  // Oracle
+    private String serviceName;     // Oracle
+    private String authType;        // SFTP/API
+    private String privateKey;      // SFTP
+    
+    /**
+     * 从实体转换
+     */
+    public static XxxxConfigDto fromEntity(EdbXxxx entity) {
+        XxxxConfigDto dto = new XxxxConfigDto();
+        dto.setHost(entity.getHost());
+        dto.setPort(entity.getPort());
+        // ... 其他字段
+        return dto;
+    }
+}
+```
+
+### H.7 代码深度要求
+
+- ✅ 接口定义：完整的方法签名和注释（20+ 行）
+- ✅ 抽象基类：核心方法实现（100+ 行）
+- ✅ 具体实现类：典型实现（150+ 行）
+- ✅ DTO/VO：完整字段定义和转换方法
+
+---
+
+## 附录 I：接口设计 - 详细模板示例
+
+> **引用位置**：第4章 4.3 接口设计 每个接口详细设计
+> **用途**：AI执行接口设计时参考此模板，确保格式规范
+
+### I.1 接口设计完整模板
+
+```markdown
+#### MXX-API-XX：接口名称
+
+**现有代码分析**：
+| 项目 | 现有代码 | 是否满足需求 | 改造策略 |
+|------|---------|------------|---------|
+| Controller 方法 | Controller.xxx() | 是/否 | 【复用/改造/新增】 |
+| Service 方法 | Service.xxx() | 是/否 | 【复用/改造/新增】 |
+
+**接口基本信息**：
+| 项目 | 内容 |
+|------|------|
+| 接口路径 | `GET/POST /api/xxx` |
+| 接口名称 | XXX |
+| 请求方式 | GET/POST |
+| 部署端点 | 连接器端/管理端 |
+| 改造标识 | 【复用/改造/新增】 |
+| 现有代码来源 | ControllerXxx.methodXxx() |
+
+**请求参数**（标注来源，字段数量基于业务复杂度）：
+| 参数名 | 位置 | 类型 | 必填 | 说明 | 示例 | 来源 |
+|-------|------|------|------|------|------|------|
+| xxxId | Path | Long | 是 | XXX ID | `123` | 【复用】 |
+| newField | Body | String | 是 | 新增字段 | `xxx` | 【新增】 |
+| ... | ... | ... | ... | ... | ... | ... |
+
+**字段数量要求**（基于业务特征识别结果）：
+- 识别结果为"简单"：请求参数≥5 个，响应参数≥8 个（充分覆盖业务需求）
+- 识别结果为"中等"：请求参数≥10 个，响应参数≥15 个（充分覆盖业务需求）
+- 识别结果为"复杂"：请求参数≥15 个，响应参数≥20 个（充分覆盖业务需求，参考 M04）
+
+**响应参数**（标注来源，字段数量基于业务复杂度）：
+| 参数名 | 类型 | 说明 | 示例 | 来源 |
+|-------|------|------|------|------|
+| code | Integer | 响应码 | `200` | 【复用】 |
+| msg | String | 响应消息 | `success` | 【复用】 |
+| data | Object | 响应数据 | - | 【新增】 |
+| ... | ... | ... | ... | ... |
+
+**业务逻辑**（≥6 步，每步详细说明）：
+1. 参数校验（校验哪些字段，校验规则是什么）
+2. 权限校验（校验什么权限，如何校验）
+3. 查询数据（查询什么表，查询条件是什么）
+4. 业务处理（具体处理逻辑是什么）
+5. 更新状态（更新什么字段，更新为什么值）
+6. 返回结果（返回什么数据）
+
+**错误码**（≥3 个，每个错误码详细说明）：
+| 错误码 | HTTP 状态 | 含义 | 处理建议 |
+|-------|----------|------|---------|
+| XXX_INVALID | 400 | XXX 无效 | 检查 XXX 参数 |
+| ... | ... | ... | ... |
+```
+
+### I.2 所有接口必须完整展开（严禁省略铁律）
+
+- 接口清单中的每一个接口都必须按上述模板完整展开
+- 不允许"其他接口类似"等省略表述
+- 不允许"完整接口设计见附录"等省略表述
+
+---
+
+## 附录 J：核心逻辑设计完整示例（合约管理 - 双方签署）
+
+> **引用位置**：第4章 4.2 核心逻辑设计
+> **用途**：AI执行核心逻辑设计时参考此示例，确保格式规范
+
+### J.1 示例背景
+
+**模块**：合约管理（数字合约签署流程）
+**核心逻辑**：双方签署同一版本后才备案
+
+### J.2 完整示例
+
+```markdown
+### 核心逻辑 1：双方签署同一版本后才备案
+
+**识别来源**：
+- 需求依据：MD 第 3.3 章"数字合约管理" - "合约签署（使用主体私钥签名）"
+- 4.1 流程：流程 1 第 18 步"双方都签署 v1 后备案"
+- 业务问题：需方和供方可能签署不同版本，需确保双方对同一版本签名后才备案
+
+**设计要点**：
+1. **核心机制**：
+   - 版本控制：每次修改 version+1
+   - 签署状态独立：creator_sign_status / receiver_sign_status
+   - 备案条件：creator_sign=1 AND receiver_sign=1 AND 同一 version
+
+2. **关键实现位置**：
+   - `ContractService.sign()` - 签署逻辑
+   - `ContractService.checkFilingCondition()` - 备案条件检查
+   - `ContractFilingTask.execute()` - 定时扫描备案
+
+3. **依赖的公共组件**：
+   - `initiatorAuthUtil.doBidirectionalAuth()` - 双向身份认证
+   - `SignatureUtils.sign()` - 使用主体私钥签名
+   - `SignatureUtils.verify()` - 验签
+
+4. **异常处理**：
+   - 验签失败：返回"签名无效"，状态不变
+   - 版本不一致：返回"版本已变更，需重新签署"
+   - 备案失败：filing_success=0，定时任务重试
+
+5. **性能考虑**：
+   - QPS 预估：100 次/分钟（签署操作低频）
+   - 缓存策略：合约详情缓存 5 分钟
+   - 限流策略：单用户 10 次/分钟（防止恶意签署）
+
+**实现伪代码**：
+```java
+// ContractService.sign()
+public void sign(Long contractId, Integer version, String signature) {
+    // 1. 双向身份认证
+    initiatorAuthUtil.doBidirectionalAuth();
+    
+    // 2. 获取合约
+    Contract contract = contractMapper.selectById(contractId);
+    
+    // 3. 版本校验
+    if (!version.equals(contract.getVersion())) {
+        throw new BusinessException("版本已变更，当前版本：" + contract.getVersion());
+    }
+    
+    // 4. 验签
+    boolean valid = SignatureUtils.verify(contract.getContent(), signature, currentUser.getPublicKey());
+    if (!valid) {
+        throw new BusinessException("签名无效");
+    }
+    
+    // 5. 更新签署状态
+    if (currentUser.isCreator()) {
+        contract.setCreatorSignStatus(1);
+        contract.setCreatorSignature(signature);
+    } else {
+        contract.setReceiverSignStatus(1);
+        contract.setReceiverSignature(signature);
+    }
+    
+    // 6. 检查备案条件
+    if (contract.getCreatorSignStatus() == 1 
+        && contract.getReceiverSignStatus() == 1) {
+        contract.setStatus(2); // 已生效
+        contract.setFilingTime(new Date());
+    }
+    
+    contractMapper.update(contract);
+}
+```
+
+**接口复用性分析**：
+- 可复用的现有接口：
+  - `POST /contract/negotiate` - 协商接口（复用双向认证逻辑）
+  - `GET /contract/detail` - 详情接口（复用查询逻辑）
+- 需新增的接口：
+  - `POST /contract/sign` - 签署接口（新增签署逻辑）
+
+**数据流转说明**：
+- 输入字段：contractId、version、signature → 来自前端签署操作
+- 输出字段：creator_sign_status、receiver_sign_status → 持久化到 t_contract 表
+- 持久化字段：t_contract.creator_sign_status、t_contract.status、t_contract.filing_time
 ```
 
 ---
