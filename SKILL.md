@@ -136,7 +136,7 @@ description: |
   
   6. **验证脚本执行**（强制执行，模块完成后）
      - 执行命令：`bash verify.sh <模块编号> <文档路径>`
-     - 脚本位置：`${PROJECT_DIR}/verify.sh` 或 `/Users/zhangwanyu/Downloads/req-to-design_a/verify.sh`
+     - 脚本位置：`${PROJECT_DIR}/verify.sh`
      - **验证通过标准**（严格要求）：
        - 质量评分 ≥ 95 分
        - 需求覆盖度 = 100%
@@ -163,7 +163,7 @@ description: |
   bash verify.sh <模块编号> <文档路径>
   
   # 示例
-  bash verify.sh M05 "/Users/zhangwanyu/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
+  bash verify.sh M05 "/Users/xx/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
   ```
   
   **验证结果处理**：
@@ -3167,7 +3167,7 @@ CREATE TABLE `t_xxx` (
 ```bash
 # 执行验证脚本
 bash verify.sh <模块编号> <文档路径>
-# 示例：bash verify.sh M05 "/Users/zhangwanyu/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
+# 示例：bash verify.sh M05 "/Users/xx/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
 ```
 
 **验证标准（严格要求）**：
@@ -3916,7 +3916,7 @@ print("=" * 60)
 
 ## 附录 D：验证脚本使用说明（强制执行）
 
-**脚本位置**：`/Users/zhangwanyu/Downloads/req-to-design_a/verify.sh`
+**脚本位置**：`/Users/xx/Downloads/req-to-design_a/verify.sh`
 
 **使用方式**：
 
@@ -3925,7 +3925,7 @@ print("=" * 60)
 bash verify.sh <模块编号> <文档路径>
 
 # 示例
-bash verify.sh M05 "/Users/zhangwanyu/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
+bash verify.sh M05 "/Users/xx/Downloads/skill_result/5/output/M05_数字合约管理_详细设计_完整版.md"
 ```
 
 **执行时机**：
